@@ -7,32 +7,32 @@ def game():
     screen = Screen()
     screen.colormode(255)
     screen.setup(width=500, height=400)
-    users_turtle = screen.textinput("Turtle", "Choice a color between red, blue, green or pink")
+    user_bet = screen.textinput("Make your bet", "Which turtle will win, red, blue, green or pink?")
+    turtles_colors = ["red", "blue", "green", "pink"]
+    y_positions = [60, 30, 0, -30]
+    turtles = []
 
     # Setup turtles
-    timmy = Turtle("red", 10)
-    tommy = Turtle("blue", 10)
-    bonny = Turtle("green", 10)
-    billy = Turtle("pink", 10)
-
-    timmy.goto(-230, 0)
-    tommy.goto(-230, 50)
-    bonny.goto(-230, 100)
-    billy.goto(-230, -50)
+    for i, tc in enumerate(turtles_colors):
+        new_turtle = Turtle(tc, 10)
+        new_turtle.goto(x=-230, y=y_positions[i])
+        turtles.append(new_turtle)
 
     # Start racing
     def start_racing():
-        while timmy.xcor() < 210 and tommy.xcor() < 210 and bonny.xcor() < 210 and billy.xcor() < 210:
-            timmy.turtle_walk()
-            tommy.turtle_walk()
-            bonny.turtle_walk()
-            billy.turtle_walk()
+        # Race status
+        is_race_on = True
+        while is_race_on:
+            for racing_turtle in turtles:
+                racing_turtle.turtle_walk()
+                if racing_turtle.xcor() > 220:
+                    is_race_on = False
+                    break
 
-        turtles = [timmy, tommy, bonny, billy]
         winner = max(turtles, key=lambda t: t.xcor())
         winner_color = winner.fillcolor()
 
-        print(f'Congratulations {winner_color.capitalize()} turtle wins!!!' if users_turtle == winner_color
+        print(f'Congratulations {winner_color.capitalize()} turtle wins!!!' if user_bet == winner_color
               else f'You lose {winner_color.capitalize()} turtle wins!!!')
 
     screen.listen()
