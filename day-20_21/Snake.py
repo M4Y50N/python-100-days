@@ -57,3 +57,4 @@ class Snake(Turtle):
     def move_right(self):
         if self.head.heading() != LEFT:
             self.head.seth(RIGHT)
+
