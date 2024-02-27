@@ -21,8 +21,7 @@ while game_is_on:
     screen.update()
 
     # Generate Cars
-    if len(car_manager.cars) < 20:
-        car_manager.generate_cars()
+    car_manager.generate_cars()
 
     # Detect if player won
     if player.ycor() >= 280:
