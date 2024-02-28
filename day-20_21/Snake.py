@@ -33,6 +33,12 @@ class Snake(Turtle):
     def update_size(self):
         self.add_segment(self.body[-1].position())
 
+    def reset(self):
+        [seg.goto(1000, 1000) for seg in self.body]
+        self.body.clear()
+        self.create_snake()
+        self.head = self.body[0]
+
     def move(self):
         for seg_num in range(len(self.body) - 1, 0, -1):
             next_x = self.body[seg_num - 1].xcor()
