@@ -1,9 +1,7 @@
 
-# with open("./input/letters/starting_letter.txt", "r") as file:
-#     print(file)
-
 base_letter = open("./Input/Letters/starting_letter.txt", "r")
-invites = open("./Input/Names/invited_names.txt", "r").read().split("\n")
+invites_file = open("./Input/Names/invited_names.txt", "r")
+invites = invites_file.read().split("\n")
 
 new_letter = []
 for line in base_letter:
@@ -16,3 +14,7 @@ for invite in invites:
     with open(f"./Output/ReadyToSend/{invite.lower()}_invite.txt", mode="w") as new_invite:
         for line in new_letter:
             new_invite.write(f"{" ".join(line)}\n\n")
+
+# Close files
+base_letter.close()
+invites_file.close()
