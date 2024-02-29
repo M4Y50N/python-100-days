@@ -1,20 +1,17 @@
+PLACEHOLDER = "[name]"
 
-base_letter = open("./Input/Letters/starting_letter.txt", "r")
-invites_file = open("./Input/Names/invited_names.txt", "r")
-invites = invites_file.read().split("\n")
 
-new_letter = []
-for line in base_letter:
-    new_letter.append(line.strip().split(" ")) if line.strip().split(" ")[0] != '' else ''
+with open("./Input/Names/invited_names.txt") as invites_file:
+    invites = invites_file.readlines()
 
-# Create invites
-for invite in invites:
-    new_letter[0][1] = invite
+with open("./Input/Letters/starting_letter.txt") as base_letter:
+    new_letter = base_letter.read()
 
-    with open(f"./Output/ReadyToSend/{invite.lower()}_invite.txt", mode="w") as new_invite:
-        for line in new_letter:
-            new_invite.write(f"{" ".join(line)}\n\n")
+    # Create invites
+    for invite in invites:
+        stripped_invite = invite.strip()
+        with open(f"./Output/ReadyToSend/{stripped_invite.lower().replace(" ", "_")}_invite.txt",
+                  mode="w") as new_invite:
+            new_invite.write(new_letter.replace(PLACEHOLDER, stripped_invite))
 
-# Close files
-base_letter.close()
-invites_file.close()
+
