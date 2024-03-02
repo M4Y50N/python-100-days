@@ -1,6 +1,5 @@
 import pandas
 import turtle
-import time
 
 from state import State
 
