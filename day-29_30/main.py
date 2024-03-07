@@ -7,8 +7,22 @@ import json
 
 # -------------- Search Credentials --------------
 def search_credentials():
-    with open("./data.json", mode="r") as saved_pass:
-        ...
+    try:
+        with open("./data.json", mode="r") as saved_pass:
+            data = json.load(saved_pass)
+    except FileNotFoundError:
+        messagebox.showwarning(title="Oops!", message="There's no data to search, please save a password first!")
+    else:
+        website = website_entry.get().capitalize()
+        try:
+            website_data = data[website]
+            email = website_data["email"]
+            password = website_data["password"]
+        except KeyError:
+            messagebox.showwarning(title="Oops!", message="Website doesn't exist!")
+        else:
+            messagebox.showinfo(title=website, message=f"email: {email}\n"
+                                                       f"password: {password}")
 
 
 # -------------- Password Generator --------------
@@ -47,7 +61,7 @@ def generate_password():
 # -------------- Save Password --------------
 def save_pass():
     check_fields = {
-        "website": website_entry.get(),
+        "website": website_entry.get().capitalize(),
         "email": email_user_entry.get(),
         "password": password_entry.get()
     }
@@ -85,7 +99,7 @@ def save_pass():
                     data = json.load(saved_pass)
             except FileNotFoundError:
                 with open("./data.json", mode="w") as saved_pass:
-                    json.dump(data, saved_pass, indent=4)
+                    json.dump(new_pass_fields, saved_pass, indent=4)
             else:
                 data.update(new_pass_fields)
                 with open("./data.json", mode="w") as saved_pass:
