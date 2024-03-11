@@ -1,6 +1,7 @@
 import datetime as dt
 import random
 import pandas
+import smtplib
 
 today = dt.datetime.now()
 today_tuple = (today.month, today.day)
@@ -16,4 +17,10 @@ if today_tuple in birthdays_dict:
         contents = letter_file.read()
         contents.replace("[NAME]", birthday_person["name"].capitalize())
 
+    with smtplib.SMTP("smtp.gmail.com", port=587) as connection:
+        connection.starttls()
+        connection.login(user="pethersonreis@gmail.com", password="mpcf zyug mygv zefj")
+        connection.sendmail(from_addr="pethersonreis@gmail.com",
+                            to_addrs=birthday_person["email"],
+                            msg=f"Subject: Happy Birthday\n\n{contents}")
 
