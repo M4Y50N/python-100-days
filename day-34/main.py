@@ -10,7 +10,7 @@ def answer_true():
         score.config(text=f"Score: {questions.score}")
     else:
         canvas.config(bg="red")
-    window.after(3000, pass_question)
+    window.after(1000, pass_question)
 
 
 def answer_false():
@@ -21,14 +21,17 @@ def answer_false():
         score.config(text=f"Score: {questions.score}")
     else:
         canvas.config(bg="red")
-    window.after(3000, pass_question)
+    window.after(1000, pass_question)
 
 
 def pass_question():
     global next_question
     canvas.config(bg="white")
     next_question = questions.random_question()
-    canvas.itemconfig(question, text=next_question['question'] if next_question['question'] else "Game Over!!")
+    canvas.itemconfig(question, text=next_question['question'].encode('utf-8') if next_question['question'] else "Game Over!!")
+    if not next_question:
+        true_button.config(state="disabled")
+        false_button.config(state="disabled")
 
 
 questions = Questions()
@@ -44,7 +47,7 @@ canvas = Canvas(width=400, height=350, highlightthickness=0)
 canvas.grid(row=1, column=0, columnspan=2, pady=50)
 
 next_question = questions.random_question()
-question = canvas.create_text(200, 130, width=350, text=next_question['question'], font=("Courier", 20, "bold"))
+question = canvas.create_text(200, 130, width=350, text=next_question['question'].encode('utf-8'), font=("Courier", 20, "bold"))
 
 true = PhotoImage(file="./images/true.png")
 false = PhotoImage(file="./images/false.png")
