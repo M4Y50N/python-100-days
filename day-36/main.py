@@ -5,8 +5,9 @@ from twilio.rest import Client
 
 load_dotenv()
 
-BULL = "🔺2%"
-BEAR = "🔻5%"
+STOCK = "azul4"
+BULL = "🔺"
+BEAR = "🔻"
 STOCK_API_KEY = os.getenv("STOCK_API_KEY")
 NEWS_API_KEY = os.getenv("NEWS_API_KEY")
 TWILIO_SID = os.getenv("TWILIO_SID")
@@ -16,23 +17,35 @@ MY_PHONE = os.getenv("MY_PHONE")
 
 
 def get_stock_info():
-    response = requests.get(
-        f"https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={"PETR4.SAO"}&apikey={STOCK_API_KEY}")
+    api_url = "https://www.alphavantage.co/query?"
+    params = {
+        "function": "TIME_SERIES_DAILY",
+        "symbol": f"{STOCK}.SAO",
+        "apikey": STOCK_API_KEY
+    }
+    response = requests.get(api_url, params)
     data = response.json()["Time Series (Daily)"]
     data_keys = list(data.keys())
 
-    today = float(data[data_keys[0]]['2. high'])
-    yesterday = float(data[data_keys[1]]['2. high'])
+    yesterday = float(data[data_keys[0]]['4. close'])
+    before_yesterday = float(data[data_keys[1]]['4. close'])
 
-    if today >= yesterday * 1.02:
-        send_sms("bull")
-    elif today * 1.05 <= yesterday:
-        send_sms("bear")
+    diff = yesterday - before_yesterday
+    percentage_diff = round(abs(diff / yesterday) * 100, 2)
+
+    if percentage_diff >= 5:
+        send_sms(diff, percentage_diff)
 
 
 def get_stock_news():
-    response = requests.get(
-        f"https://newsapi.org/v2/everything?q={"petr4"}&from=2024-03-13&sortBy=popularity&apiKey={NEWS_API_KEY}")
+    api_url = "https://newsapi.org/v2/everything?"
+    params = {
+        "q": STOCK,
+        # "from": "2024-03-13",
+        "sortBy": "popularity",
+        "apiKey": NEWS_API_KEY
+    }
+    response = requests.get(api_url, params)
     data = response.json()["articles"][:3]
 
     articles = []
@@ -42,15 +55,15 @@ def get_stock_news():
     return articles
 
 
-def send_sms(up_down):
+def send_sms(variation, percentage):
     articles = get_stock_news()
 
     sms_articles = ""
     for article in articles:
-        sms_articles += (f"Headline: {article['title']}\n"
-                         f"Brief: {article['description']}\n\n")
+        sms_articles += (f"*Headline*: {article['title']}\n"
+                         f"*Brief*: {article['description']}\n\n")
 
-    sms_message = f"{"PETR4"} {BULL if up_down == "bull" else BEAR}\n" + sms_articles
+    sms_message = f"{STOCK} {f"{BULL}{percentage}%" if variation > 0 else f"{BEAR}{percentage}%"}\n" + sms_articles
 
     client = Client(TWILIO_SID, TWILIO_AUTH)
 
@@ -65,3 +78,5 @@ def send_sms(up_down):
 
 
 get_stock_info()
+
+
