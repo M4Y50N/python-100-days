@@ -1,4 +1,5 @@
 from dotenv import load_dotenv
+from datetime import datetime
 import requests
 import os
 
@@ -28,5 +29,29 @@ parameters = {
 }
 
 response = requests.post(url=nutritionix_endpoint, json=parameters, headers=headers)
+data = response.json()
 
-print(response.json())
+# Add to sheets
+sheet_endpoint = os.getenv("SHEET_ENDPOINT")
+
+today_date = datetime.now().strftime("%d/%m/%Y")
+now_time = datetime.now().strftime("%X")
+
+for exercise in data["exercises"]:
+    sheet_inputs = {
+        "workout": {
+            "date": today_date,
+            "time": now_time,
+            "exercise": exercise["name"].title(),
+            "duration": exercise["duration_min"],
+            "calories": exercise["nf_calories"]
+        }
+    }
+
+    headers = {
+        "Authorization": f"Basic {os.getenv("AUTH_TOKEN")}"
+    }
+
+    sheet_response = requests.post(sheet_endpoint, json=sheet_inputs, headers=headers)
+
+    print(sheet_response.text)
