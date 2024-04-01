@@ -11,28 +11,22 @@ AUTH_TOKEN = os.getenv("AUTH_TOKEN")
 class DataManager:
     def __init__(self):
         self.sheet_data = {}
-
-    def get_flights(self):
-        header = {
+        self.header = {
             "Authorization": f"Basic {AUTH_TOKEN}"
         }
 
-        sheety_response = requests.get(SHEET_ENDPOINT, headers=header)
+    def get_flights(self):
+        sheety_response = requests.get(SHEET_ENDPOINT, headers=self.header)
         data = sheety_response.json()["prices"]
 
         self.sheet_data = data
 
-    def update_iata(self):
-        header = {
-            "Authorization": f"Basic {AUTH_TOKEN}"
-        }
-        for price in self.sheet_data:
-            if price["iataCode"] == "":
-                put_response = requests.put(SHEET_ENDPOINT + f"/{price["id"]}",
-                                            json={
-                                                "price":
-                                                    {"iataCode": price["iataCode"]}
-                                            }, headers=header,
-                                            )
+    def update_iata(self, city_id, iata_code):
+        put_response = requests.put(SHEET_ENDPOINT + f"/{city_id}",
+                                    json={
+                                        "price":
+                                            {"iataCode": iata_code}
+                                    }, headers=self.header,
+                                    )
 
-                print(put_response.text)
+        print(put_response.text)
