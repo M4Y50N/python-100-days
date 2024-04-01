@@ -1,45 +1,23 @@
 # This file will need to use the DataManager,FlightSearch, FlightData, NotificationManager
 # classes to achieve the program requirements.
-from dotenv import load_dotenv
-from pprint import pprint
-import requests
-import os
+from flight_search import FlightSearch
+from data_manager import DataManager
 
-load_dotenv()
+data_manager = DataManager()
+data_manager.get_flights()
 
-sheet_endpoint = os.getenv("SHEET_ENDPOINT")
-sheety_header = {
-    "Authorization": f"Basic {os.getenv("AUTH_TOKEN")}"
-}
+# Update IATA codes
+# Update if empty == True
+empty = False
+for data in data_manager.sheet_data:
+    # Check if IATA code is empty
+    if data["iataCode"] == "":
+        empty = True
+        fight_search = FlightSearch()
+        code = fight_search.get_iata_code(data["city"])
+        data["iataCode"] = code
 
-sheety_request = requests.get(sheet_endpoint, headers=sheety_header)
-data = sheety_request.json()
-
-# for price in data["prices"]:
-#     put_request = requests.put(sheet_endpoint + f"/{price["id"]}",
-#                                json={
-#                                    "price":
-#                                        {"iataCode": ""}
-#                                }, headers=sheety_header,
-#                                )
-    # print(put_request.json())
-
-# pprint(data)
-
-tequila_endpoint = os.getenv("TEQUILA_ENDPOINT")
-tequila_affilid = os.getenv("TEQUILA_AFFILID")
-tequila_apikey = os.getenv("TEQUILA_APIKEY")
-
-header = {
-    "apikey": tequila_apikey,
-}
-query = {
-    "term": "paris",
-    "location_types": "city"
-}
-response = requests.get(url=tequila_endpoint, headers=header, params=query)
-
-print(response.json())
-
+if empty:
+    data_manager.update_iata()
 
 
