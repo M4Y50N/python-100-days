@@ -32,14 +32,17 @@ class FlightSearch:
         query = {
             "fly_from": "SAO",
             "fly_to": "AJU",
-            "date_from": "19/04/2024",
+            "date_from": "15/04/2024",
             "date_to": "21/04/2024",
+            "flyFrom": "GRU",
             "max_stopovers": 0,
             "curr": "BRL"
         }
 
         response = requests.get(url=f"{TEQUILA_ENDPOINT}/v2/search", headers=self.header, params=query)
 
-        for flight in response.json()["data"]:
-            print(flight["price"])
-            print(flight["deep_link"])
+        print(response.json()["data"][0]["price"])
+        # for flight in response.json()["data"]:
+        #     print(flight["price"])
+        #     print(flight["deep_link"])
+        #     print(flight)
