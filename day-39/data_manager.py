@@ -22,4 +22,5 @@ class DataManager:
 
         self.data = pandas.DataFrame(updated_csv)
         self.data.to_csv("./data/flight_data.csv")
+        print(self.data)
 
