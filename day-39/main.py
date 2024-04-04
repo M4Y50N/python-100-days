@@ -1,5 +1,6 @@
 from flight_search import FlightSearch
 from data_manager import DataManager
+from notification_manager import NotificationManager
 from datetime import datetime, timedelta
 import math
 
@@ -21,6 +22,7 @@ for index, data in enumerate(data_manager.sheet_data):
 tomorrow = datetime.now() + timedelta(days=1)
 six_month_from_today = datetime.now() + timedelta(days=(6 * 30))
 
+lowest_flights = []
 for destination in data_manager.sheet_data:
     fs = FlightSearch()
     flight = fs.get_flight(ORIGIN_CITY, destination["IATA Code"], tomorrow, six_month_from_today)
@@ -29,8 +31,11 @@ for destination in data_manager.sheet_data:
         if flight.price < destination["Lowest Price"] or math.isnan(destination["Lowest Price"]):
             is_updatable = True
             destination["Lowest Price"] = flight.price
+            lowest_flights.append(flight)
 
 if is_updatable:
     data_manager.update_iata()
 
 
+notification_manager = NotificationManager()
+notification_manager.send_message(lowest_flights)
