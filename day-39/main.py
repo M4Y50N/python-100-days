@@ -4,7 +4,7 @@ from notification_manager import NotificationManager
 from datetime import datetime, timedelta
 import math
 
-ORIGIN_CITY = "SAO"
+ORIGIN_CITY = "AJU"
 
 data_manager = DataManager()
 data_manager.get_flights()
@@ -22,6 +22,7 @@ for index, data in enumerate(data_manager.sheet_data):
 tomorrow = datetime.now() + timedelta(days=1)
 six_month_from_today = datetime.now() + timedelta(days=(6 * 30))
 
+# Get lower prices
 lowest_flights = []
 for destination in data_manager.sheet_data:
     fs = FlightSearch()

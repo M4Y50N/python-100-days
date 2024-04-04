@@ -57,7 +57,8 @@ class NotificationManager:
                              f"<a href={flight.link} style='color: white;'>"
                              f"Saiba Mais"
                              f"</a>"
-                             "</div>")
+                             "</div>"
+                             "<hr>")
 
         html_text = f"""
             <!DOCTYPE html>
@@ -123,5 +124,5 @@ class NotificationManager:
             connection.starttls()
             connection.login(self.MY_EMAIL, self.MY_APP_PASSWORD_EMAIL)
             connection.sendmail(from_addr=self.MY_EMAIL,
-                                to_addrs="mayson.reiz@gmail.com",
+                                to_addrs=self.MY_EMAIL,
                                 msg=msg.as_string())

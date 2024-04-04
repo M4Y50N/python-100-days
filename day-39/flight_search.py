@@ -37,7 +37,7 @@ class FlightSearch:
             "nights_in_dst_from": 7,
             "nights_in_dst_to": 28,
             "one_for_city": 1,
-            "max_stopovers": 0,
+            # "max_stopovers": 0,
             "curr": "BRL"
         }
 
@@ -49,14 +49,20 @@ class FlightSearch:
             print(f"There's no flight to this destination {fly_to}")
             return None
 
+        dest_city = None
+        for r in data["route"]:
+            if r["flyTo"] == fly_to:
+                dest_city = r["cityTo"]
+                break
+
         flight_data = FlightData(
             price=data["price"],
             origin_city=data["route"][0]["cityFrom"],
             origin_airport=data["route"][0]["flyFrom"],
-            destination_city=data["route"][0]["cityTo"],
-            destination_airport=data["route"][0]["flyTo"],
+            destination_city=dest_city,
+            destination_airport=fly_to,
             out_date=data["route"][0]["local_departure"].split("T")[0],
-            return_date=data["route"][1]["local_departure"].split("T")[0],
+            return_date=data["route"][len(data["route"])-1]["local_departure"].split("T")[0],
             link=data["deep_link"]
         )
         print(f"{flight_data.destination_city}: R${flight_data.price}")
