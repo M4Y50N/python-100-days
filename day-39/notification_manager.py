@@ -124,5 +124,5 @@ class NotificationManager:
             connection.starttls()
             connection.login(self.MY_EMAIL, self.MY_APP_PASSWORD_EMAIL)
             connection.sendmail(from_addr=self.MY_EMAIL,
-                                to_addrs=self.MY_EMAIL,
+                                to_addrs="yannoferinha@gmail.com",
                                 msg=msg.as_string())
