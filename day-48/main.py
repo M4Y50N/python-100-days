@@ -8,43 +8,36 @@ chrome_options.add_experimental_option("detach", True)
 
 driver = webdriver.Chrome(options=chrome_options)
 
-driver.get("https://orteil.dashnet.org/cookieclicker/")
+driver.get("http://orteil.dashnet.org/experiments/cookie/")
 
-driver.execute_script(f"window.localStorage.setItem('CookieClickerLang', '{"PT-BR"}');")
-driver.refresh()
+big_cookie = driver.find_element(By.ID, value="cookie")
+store = driver.find_elements(By.CSS_SELECTOR, value="#store div")
+products_ids = [product.get_attribute("id") for product in store]
 
-big_cookie = driver.find_element(By.ID, value="bigCookie")
-
-timeout = time.time() + 5
+timeout = time.time() + 1
 five_min = time.time() + 60 * 5
 
 while True:
     big_cookie.click()
 
     if time.time() > timeout:
-        cookies = int(driver.find_element(By.ID, value="cookies").text.split(" ")[0].replace(",", "_"))
+        money = int(driver.find_element(By.ID, value="money").text.replace(",", "_"))
 
-        store = driver.find_element(By.CSS_SELECTOR, value="#store")
+        all_prices = driver.find_elements(by=By.CSS_SELECTOR, value="#store b")
+        item_prices = []
 
-        products = store.find_elements(By.CSS_SELECTOR, value="#products div")[1:]
+        for price in all_prices:
+            element_text = price.text
+            if element_text != "":
+                cost = int(element_text.split("-")[1].strip().replace(",", ""))
+                item_prices.append(cost)
 
-        store_items = []
-        # Get Store Items
-        for p in products:
-            print(p)
-            # price = p.find_element(By.CLASS_NAME, value="price").text.strip()
-            # if price:
-            #     store_items.append({
-            #         "product": p,
-            #         "price": int(price.replace(",", "_"))
-            #     })
+        affordable_prices = []
+        for i, price in enumerate(item_prices):
+            if money > price:
+                affordable_prices.append({"price": price, "id": products_ids[i]})
 
-        driver.find_element(By.ID, value="product0").click()
-
-
-        # Buy Upgrades
-        # for p in store_items:
-        #     if p["price"] >= cookies:
-        #         p["product"].click()
+        if len(affordable_prices):
+            driver.find_element(by=By.ID, value=affordable_prices[-1]["id"]).click()
 
         timeout += 5
