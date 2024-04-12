@@ -1,3 +1,5 @@
+from matrix_generator import MatrixGenerator
+
 rule = """22-2
         2-3
         3-7
@@ -47,6 +49,7 @@ rule = """22-2
         6-8
         8-25"""
 
+# Turn rules into a dict
 rules_dict = {}
 for i, line in enumerate(rule.split("\n")):
     key, value = line.split('-')
@@ -57,39 +60,7 @@ for i, line in enumerate(rule.split("\n")):
     else:
         rules_dict[key] = [value]
 
-matrix = []
-rules_copy = rules_dict.copy()
-for i, n in enumerate(range(1, 26)):
-    if len(matrix):
-        try:
-            prev_num = matrix[-1]
-            next_num = rules_dict[prev_num][0]
-            matrix.append(next_num)
-            rules_dict[prev_num].pop(0)
-        except KeyError:
-            last_num = matrix[-1]
-            if matrix.count(last_num) > 1:
-                to_remove_index = matrix.index(last_num)
-                matrix.pop(to_remove_index)
-                second = None
-                for key, value in rules_dict.items():
-                    if last_num == value:
-                        matrix.append(key)
-                        second = key
-                    elif second == value:
-                        matrix.append(key)
-                        rules_dict.pop(key)
-                        rules_dict.pop(second)
-                        break
-            else:
-                for key, value in rules_dict.items():
-                    if last_num == value:
-                        matrix.append(key)
-                        rules_dict.pop(key)
-                        break
-    else:
-        matrix.append(n)
+generate_2_25_matrix = MatrixGenerator(dict(sorted(rules_dict.items())), order=2)
+generate_2_25_matrix.generate_matrix()
 
-print(matrix)
-
-
+print(generate_2_25_matrix.matrix)
