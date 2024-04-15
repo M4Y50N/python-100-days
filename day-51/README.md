@@ -5,4 +5,4 @@
 
 ### Used Libraries: Selenium
 
-#### Note: Doesn't work at the moment because of robot verification
+#### Note: Doesn't always work because of robot verification
