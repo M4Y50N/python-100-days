@@ -57,8 +57,6 @@ class InstagramBot:
                     print("Probably you can't follow more users now.")
                     self.qtd = 0
 
-
-
         scroll_origin = ScrollOrigin.from_element(self.to_follow[-1], 0, -50)
         ActionChains(self.driver) \
             .scroll_from_origin(scroll_origin, 0, 200) \
